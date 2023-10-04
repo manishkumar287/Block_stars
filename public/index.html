@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Crypto Price Tracker</title>
+</head>
+
+<body>
+    <h1>Last Price from CoinMarketCap</h1>
+    <p>Connection Status: <span id="connection-status">Connecting...</span></p>
+    <p>Latest Price BTC: <span id="crypto-price">$0.00</span></p>
+
+    <script>
+        const cryptoPrice = document.getElementById('crypto-price');
+        const connectionStatus = document.getElementById('connection-status');
+
+        const eventSource = new EventSource('/sse');
+
+        eventSource.onopen = () => {
+            connectionStatus.innerText = 'Established';
+        };
+
+        eventSource.onmessage = (event) => {
+            console.log("event ",event);
+            const data = JSON.parse(event.data);
+            cryptoPrice.innerText = `$${data.price}`;
+        };
+
+        eventSource.onerror = () => {
+            connectionStatus.innerText = 'Error';
+        };
+    </script>
+</body>
+
+</html>
